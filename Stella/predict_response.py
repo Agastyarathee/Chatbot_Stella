@@ -16,7 +16,6 @@ import random
 import tensorflow
 from data_preprocessing import get_stem_words
 
-# load the model
 model = tensorflow.keras.models.load_model('./chatbot_model.h5')
 
 # Load data files
@@ -27,22 +26,14 @@ classes = pickle.load(open('./classes.pkl','rb'))
 
 def preprocess_user_input(user_input):
 
-    
     input_word_token_1 = nltk.word_tokenize(user_input)
     input_word_token_2 = get_stem_words(input_word_token_1, ignore_words) 
     input_word_token_2 = sorted(list(set(input_word_token_2)))
 
     bag=[]
     bag_of_words = []
-
-    # tokenize the user_input
-
-    # convert the user input into its root words : stemming
-
-    # Remove duplicacy and sort the user_input
    
-    # Input data encoding : Create BOW for user_input
-
+    # Input data encoding 
     for word in words:            
         if word in input_word_token_2:              
             bag_of_words.append(1)
@@ -51,8 +42,6 @@ def preprocess_user_input(user_input):
     bag.append(bag_of_words)
   
     return np.array(bag)
-    
-    
     
 def bot_class_prediction(user_input):
     inp = preprocess_user_input(user_input)
@@ -64,30 +53,26 @@ def bot_class_prediction(user_input):
     return predicted_class_label
 
 
-def bot_response(user_input):
+def bot_response(user_imput):
 
    predicted_class_label =  bot_class_prediction(user_input)
  
-   # extract the class from the predicted_class_label
-   predicted_class = ""
-
-   # now we have the predicted tag, select a random response
+   predicted_class = classes[predicted_class_label]
 
    for intent in intents['intents']:
     if intent['tag']==predicted_class:
        
-       # choose a random bot response
-        bot_response = ""
+        bot_response = random.choice(intent['responses'])
     
         return bot_response
     
 
+
 print("Hi I am Stella, How Can I help you?")
 
 while True:
-
-    # take input from the user
-    user_input = input('Type you message here : ')
+    user_input = input("Type your message here:")
+    print("User Input: ", user_input)
 
     response = bot_response(user_input)
     print("Bot Response: ", response)
